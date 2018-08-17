@@ -1,0 +1,12 @@
+target
+
+/test-output
+/out
+/**/target
+
+.idea
+**/project/target
+**/project/project/target
+
+# WorkSheet files
+*.sc
