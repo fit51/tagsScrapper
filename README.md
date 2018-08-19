@@ -32,6 +32,7 @@ scrapper {
   proxy {
     host = "99.99.99.99"
     port = 8080
+    //Credentials are optional
     credentials {
       user: "admin"
       password: "password"
