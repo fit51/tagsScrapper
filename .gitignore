@@ -1,12 +1,8 @@
-target
-
-/test-output
-/out
-/**/target
+target/
+project/target/
+logs/
 
 .idea
-**/project/target
-**/project/project/target
 
 # WorkSheet files
 *.sc
