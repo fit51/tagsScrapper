@@ -10,8 +10,7 @@ import com.typesafe.config.ConfigFactory
 import com.typesafe.scalalogging.StrictLogging
 import io.circe.Printer
 import tags.scrapper.json.AkkaHttpCirceSupport
-import tags.scrapper.stackexchange.{ScrapperConfig, TagsScrapper}
-import io.circe.generic.auto._
+import tags.scrapper.stackexchange.{ScrapperConfig, TagStatistics, TagsScrapper}
 
 import scala.util.control.NonFatal
 import scala.util.{Failure, Success}
@@ -40,7 +39,7 @@ class WebServer extends StrictLogging with AkkaHttpCirceSupport {
       path("search") {
           parameters("tag".as[String].*) { tags =>
             onSuccess(scrapper.calculateStatistics(tags.toSet)) { result =>
-              complete(result)
+              complete(StatisticsResponse(result))
             }
           }
       }

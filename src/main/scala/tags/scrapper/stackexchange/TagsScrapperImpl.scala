@@ -33,11 +33,11 @@ class TagsScrapperImpl(config: ScrapperConfig)
 
   implicit val scheduler = Scheduler(ec)
 
-  protected val http: HttpClient = new HttpClientQueueImplementation(config.queue, config.maxConnections, config.proxy)
+  val http: HttpClient = new HttpClientQueueImplementation(config.queue, config.maxConnections, config.proxy)
 
-  protected val stackURL = "https://api.stackexchange.com/2.2/"
+  val stackURL = "https://api.stackexchange.com/2.2/"
 
-  protected def formSearchRequest(tag: String, pageSize: Int = 100, page: Option[Int] = None) = {
+  def formSearchRequest(tag: String, pageSize: Int = 100, page: Option[Int] = None): HttpRequest = {
     val uri = Uri(stackURL + "search")
     val query = Query(Map(
       "pagesize" -> pageSize.toString,
@@ -87,7 +87,7 @@ class TagsScrapperImpl(config: ScrapperConfig)
           ))
       }
 
-  def gatherTagsStatistics(tags: Observable[ResponseTag]) =
+  def gatherTagsStatistics(tags: Observable[ResponseTag]): Observable[(String, TagStatistics)] =
     tags
       //Does not allocate all ResponseTags in Memory (Streaming approach)
       .groupBy(_.name)

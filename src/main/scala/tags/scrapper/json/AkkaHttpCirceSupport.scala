@@ -6,6 +6,9 @@ import akka.http.scaladsl.unmarshalling.{FromEntityUnmarshaller, Unmarshaller}
 import akka.util.ByteString
 import io.circe.{Decoder, Encoder, Json, Printer}
 import io.circe.parser.decode
+import tags.scrapper.server.StatisticsResponse
+import io.circe.syntax._
+import io.circe.generic.auto._
 
 trait AkkaHttpCirceSupport {
 
@@ -28,5 +31,15 @@ trait AkkaHttpCirceSupport {
 
   implicit def circeMarshaller[A: Encoder](implicit printer: Printer = Printer.noSpaces): ToEntityMarshaller[A] =
     jsonMarshaller(printer) compose Encoder[A].apply
+
+  //Preserves Tags ordering by "total" in Json.obj fields
+  implicit val encodeStatisticsResponse = new Encoder[StatisticsResponse] {
+    override def apply(a: StatisticsResponse): Json = {
+      val fields = a.payload.map { case (name, stat) =>
+        (name, stat.asJson)
+      }
+      Json.obj(fields: _*)
+    }
+  }
 
 }

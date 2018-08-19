@@ -33,20 +33,21 @@ class HttpClientQueueImplementation(queueSize: Int, maxConnections: Int,
   }
 
   val poolSettings = ConnectionPoolSettings(system)
-      .withConnectionSettings(ClientConnectionSettings(system)
-        .withTransport(httpTransport))
+    .withConnectionSettings(
+      ClientConnectionSettings(system).withTransport(httpTransport)
+    )
     .withMaxConnections(maxConnections)
 
   protected def poolClientFlow = Http().superPool[Promise[HttpResponse]](settings = poolSettings)
 
   protected val queue =
     Source.queue[(HttpRequest, Promise[HttpResponse])](queueSize, OverflowStrategy.dropNew)
-    .via(poolClientFlow)
-    .toMat(Sink.foreach({
-      case (Success(resp), promise) => promise.success(resp)
-      case (Failure(e), promise) => promise.failure(e)
-    }))(Keep.left)
-    .run()
+      .via(poolClientFlow)
+      .toMat(Sink.foreach({
+        case (Success(resp), promise) => promise.success(resp)
+        case (Failure(e), promise) => promise.failure(e)
+      }))(Keep.left)
+      .run()
 
   protected def decodeResponse(response: HttpResponse): HttpResponse = {
     val decoder = response.encoding match {
@@ -57,7 +58,6 @@ class HttpClientQueueImplementation(queueSize: Int, maxConnections: Int,
       case HttpEncodings.identity ⇒
         NoCoding
     }
-
     decoder.decodeMessage(response)
   }
 
