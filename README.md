@@ -9,11 +9,13 @@ sbt assembly
 ```
 
 ## Run
-Run the fat-jar with config path parameter
+Run the fat-jar and specify config path
 
+```
+java -Dconfig.file=application.conf -jar tags-scrapper-0.1.jar
+```
 
-
-## TypeSafe Config
+### Config Example Setup
 
 ```
 server {
@@ -37,3 +39,7 @@ scrapper {
   }
 }
 ```
+
+## Call Http Search Method
+
+http://localhost:8080/search?tag=scala?tag=clojure
