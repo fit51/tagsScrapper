@@ -91,8 +91,8 @@ class TagsScrapperImpl(config: ScrapperConfig)
     tags
       //Does not allocate all ResponseTags in Memory (Streaming approach)
       .groupBy(_.name)
-      .mapParallelUnordered(1000) { gr =>
-        gr.foldLeftL((0L, 0L)) { (acc, tag) =>
+      .mergeMap { gr =>
+        gr.foldLeftF((0L, 0L)) { (acc, tag) =>
           val answered = if (tag.isAnswered) 1 else 0
           (acc._1 + 1, acc._2 + answered)
         }.map {
